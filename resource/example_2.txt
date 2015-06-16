@@ -1,0 +1,14 @@
+firewall{
+check{
+item:1,2,4,5,6,7,8,9
+tag:log
+result:pass
+detail:logging on
+detail:logging timestamp
+detail:logging monitor notifications
+detail:logging buffered notifications
+detail:logging trap informational
+detail:logging history notifications
+detail:logging host outside 10.250.1.82
+}
+}
