@@ -2,7 +2,6 @@ package org.pinae.ndb;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -52,7 +51,7 @@ public class Statement {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public Object execute(Object ndb, String query, Action action) {
 		
-		if (ndb == null || (ndb instanceof List) == false || (ndb instanceof Map) == false) {
+		if (ndb == null || ((ndb instanceof List) == false && (ndb instanceof Map) == false)) {
 			return null;
 		}
 		
