@@ -1,5 +1,6 @@
 package org.pinae.ndb.action;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -11,7 +12,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.pinae.ndb.NdbTestConstant;
 import org.pinae.ndb.Statement;
-import org.pinae.ndb.action.TraversalAction;
 
 /**
  * ndb自定义遍历行为单元测试
@@ -40,22 +40,28 @@ public class TraversalTest {
 	/**
 	 * ndb遍历测试
 	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Test
 	public void testTraversal() {
 		
 		Object result = null;
 		
-		//Travel: 遍历
-		result = statment.execute( (Map<String, Object>)ndb, "select:firewall->objectgroup");
+		// Travel: 遍历
+		result = statment.execute((Map<String, Object>) ndb, "select:root->parent->child");
 		assertTrue(result instanceof List);
-		assertTrue(((List)result).size() == 0);
+		assertEquals(((List) result).size(), 3);
 		
+		//修改child节点名称为children
 		result = statment.execute(ndb, "travel", new TraversalActionTest());
 		assertTrue(result instanceof Map);
+
+		Object selectResult = statment.execute((Map<String, Object>) result, "select:root->parent->child");
+		assertTrue(selectResult instanceof List);
+		assertEquals(((List) selectResult).size(), 0);
 		
-		result = statment.execute((Map<String, Object>)result, "select:firewall->objectgroup");
-		assertTrue(result instanceof List);
-		assertTrue(((List)result).size() > 0);
+		selectResult = statment.execute((Map<String, Object>) result, "select:root->parent->children");
+		assertTrue(selectResult instanceof List);
+		assertEquals(((List) selectResult).size(), 3);
 	}
 	
 	/**
@@ -69,11 +75,8 @@ public class TraversalTest {
 		public String handleKey(String key) {
 			String newKey = "";
 
-			if (key.indexOf("-") > -1) {
-				String keys[] = key.split("-");
-				for (String _key : keys){
-					newKey += _key;
-				}
+			if (key.equals("child")) {
+				newKey = "children";
 			} else {
 				newKey = key;
 			}

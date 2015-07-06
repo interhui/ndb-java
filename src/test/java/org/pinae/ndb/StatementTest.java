@@ -14,7 +14,7 @@ import org.pinae.ndb.Statement;
 import org.pinae.ndb.action.TraversalTest.TraversalActionTest;
 
 /**
- * ndb声明执行测试
+ * ndb执行测试
  * 
  * @author Huiyugeng
  * 
@@ -38,22 +38,39 @@ public class StatementTest {
 	}
 
 	/**
-	 * 测试ndb中数据存在
+	 * 测试ndb的exits操作
 	 */
 	@Test
 	public void testExist() {
 		Object result = null;
 
 		// Exist：存在测试
-		result = statment.execute(ndb, "exist:firewall->interface->name:dmz && ip:192.168.12.2");
+		result = statment.execute(ndb, "exist:root->parent->child->name:jim");
 		assertEquals(((Boolean) result).booleanValue(), true);
 
-		result = statment.execute(ndb, "exist:firewall->interface->name:boss && ip:192.168.32.21");
+		result = statment.execute(ndb, "exist:root->parent->child->sex:male && name:m$");
+		assertEquals(((Boolean) result).booleanValue(), true);
+		
+		result = statment.execute(ndb, "exist:root->parent->child->sex:female && name:m$");
 		assertEquals(((Boolean) result).booleanValue(), false);
+	}
+	
+	/**
+	 * 测试ndb的one操作
+	 */
+	@SuppressWarnings("rawtypes")
+	@Test
+	public void testOne() {
+		Object result = null;
+
+		// One：查询测试
+		result = statment.execute(ndb, "one:root->parent->child->sex:male");
+		assertEquals(((Map) result).get("name"), "jim");
+		assertEquals(((Map) result).get("age"), "20");
 	}
 
 	/**
-	 * 测试ndb的select行为
+	 * 测试ndb的select操作
 	 */
 	@SuppressWarnings("rawtypes")
 	@Test
@@ -63,46 +80,53 @@ public class StatementTest {
 		List resultList = null;
 
 		// Select：查询测试
-		result = statment.execute(ndb, "select:firewall->interface->name:dmz && ip:192.168.12.2");
+		result = statment.execute(ndb, "select:root->parent->child->name:/.*m/");
+		assertTrue(result instanceof List);
+		resultList = (List) result;
+		assertEquals(resultList.size(), 2);
+		assertEquals(((Map) resultList.get(0)).get("name"), "jim");
+		assertEquals(((Map) resultList.get(1)).get("name"), "tom");
+
+		result = statment.execute(ndb, "select:root->parent->child->age:[15,25]");
+		assertTrue(result instanceof List);
+		resultList = (List) result;
+		assertEquals(resultList.size(), 2);
+		assertEquals(((Map) resultList.get(0)).get("name"), "jim");
+		assertEquals(((Map) resultList.get(1)).get("name"), "lily");
+		
+		result = statment.execute(ndb, "select:root->parent->child->sex:^fe");
 		assertTrue(result instanceof List);
 		resultList = (List) result;
 		assertEquals(resultList.size(), 1);
-		assertEquals(((Map) resultList.get(0)).get("ip"), "192.168.12.2");
-
-		result = statment.execute(ndb, "select:firewall->interface->name:/dmz|inside/ && ip:/192.168.12.2|192.168.228.122/");
+		assertEquals(((Map) resultList.get(0)).get("name"), "lily");
+		
+		result = statment.execute(ndb, "select:root->parent->child->name:m$");
 		assertTrue(result instanceof List);
 		resultList = (List) result;
 		assertEquals(resultList.size(), 2);
-
-		result = statment.execute(ndb, "select:firewall->interface");
+		assertEquals(((Map) resultList.get(0)).get("name"), "jim");
+		assertEquals(((Map) resultList.get(1)).get("name"), "tom");
+		
+		result = statment.execute(ndb, "select:root->parent->child->sex:male && age:[15,25]");
+		assertTrue(result instanceof List);
+		resultList = (List) result;
+		assertEquals(resultList.size(), 1);
+		assertEquals(((Map) resultList.get(0)).get("name"), "jim");
+		
+		result = statment.execute(ndb, "select:root->parent->child");
 		assertTrue(result instanceof List);
 		resultList = (List) result;
 		assertEquals(resultList.size(), 3);
+		assertEquals(((Map) resultList.get(0)).get("name"), "jim");
+		assertEquals(((Map) resultList.get(1)).get("name"), "lily");
+		assertEquals(((Map) resultList.get(2)).get("name"), "tom");
 
-		result = statment.execute(ndb, "select:firewall->interface->mask:255.255.255.0");
-		assertTrue(result instanceof List);
-		resultList = (List) result;
-		assertEquals(resultList.size(), 3);
-
-		result = statment.execute(ndb, "select:firewall->access-list->action:/permit|deny/");
-		assertTrue(result instanceof List);
-		resultList = (List) result;
-		assertEquals(resultList.size(), 11);
-
-		result = statment.execute(ndb, "select:firewall->:/\\S+-list/->action:/permit|deny/");
-		assertTrue(result instanceof List);
-		resultList = (List) result;
-		assertEquals(resultList.size(), 11);
-
-		result = statment.execute(ndb, "select:firewall->interface->security:[50,100]");
+		result = statment.execute(ndb, "select:root->parent->:/child|nephew/->sex:female");
 		assertTrue(result instanceof List);
 		resultList = (List) result;
 		assertEquals(resultList.size(), 2);
-
-		result = statment.execute(ndb, "select:firewall->:/host|interface/");
-		assertTrue(result instanceof List);
-		resultList = (List) result;
-		assertEquals(resultList.size(), 4);
+		assertEquals(((Map) resultList.get(0)).get("name"), "lucy");
+		assertEquals(((Map) resultList.get(1)).get("name"), "lily");
 
 	}
 
@@ -117,16 +141,17 @@ public class StatementTest {
 		List resultList = null;
 
 		// Delete：删除测试
-		result = statment.execute(ndb, "delete:firewall->interface->name:inside !! [mask, security]");
-		result = statment.execute((Map<String, Object>) result, "select:firewall->interface->name:inside");
+		result = statment.execute(ndb, "delete:root->parent->child->name:jim !! [sex, age]");
+		result = statment.execute((Map<String, Object>) result, "select:root->parent->child->name:jim");
 		assertTrue(result instanceof List);
 		resultList = (List) result;
 		assertEquals(resultList.size(), 1);
-		assertEquals(((Map) resultList.get(0)).get("mask"), null);
-		assertEquals(((Map) resultList.get(0)).get("security"), null);
+		assertEquals(((Map) resultList.get(0)).get("name"), "jim");
+		assertEquals(((Map) resultList.get(0)).get("sex"), null);
+		assertEquals(((Map) resultList.get(0)).get("age"), null);
 
-		result = statment.execute(ndb, "delete:firewall->interface->name:outside !! block");
-		result = statment.execute((Map<String, Object>) result, "select:firewall->interface->name:outside");
+		result = statment.execute(ndb, "delete:root->parent->child->name:jim !! block");
+		result = statment.execute((Map<String, Object>) result, "select:root->parent->child->name:jim");
 		assertTrue(result instanceof List);
 		resultList = (List) result;
 		assertEquals(resultList.size(), 0);
@@ -141,14 +166,14 @@ public class StatementTest {
 		Object result = null;
 		List resultList = null;
 
-		result = statment.execute(ndb, "select:firewall->interface");
+		result = statment.execute(ndb, "select:root->parent->child");
 		assertTrue(result instanceof List);
 		resultList = (List) result;
 		assertEquals(resultList.size(), 3);
 
-		result = statment.execute(ndb, "delete:firewall->interface->name:outside !! block");
+		result = statment.execute(ndb, "delete:root->parent->child->name:jim !! block");
 		result = statment.execute((Map<String, Object>) result, "clean");
-		result = statment.execute((Map<String, Object>) result, "select:firewall->interface");
+		result = statment.execute((Map<String, Object>) result, "select:root->parent->child");
 		assertTrue(result instanceof List);
 		resultList = (List) result;
 		assertEquals(resultList.size(), 2);
@@ -165,13 +190,33 @@ public class StatementTest {
 		List resultList = null;
 
 		// Update：更新测试
-		result = statment.execute(ndb, "update:firewall->interface->name:dmz !! name=dmz2,mask=255.255.255.32");
-		result = statment.execute((Map<String, Object>) result, "select:firewall->interface->name:dmz2");
+		result = statment.execute(ndb, "update:root->parent->child->name:jim !! age=21, address=China");
+		result = statment.execute((Map<String, Object>) result, "select:root->parent->child->name:jim");
 		assertTrue(result instanceof List);
 		resultList = (List) result;
 		assertEquals(resultList.size(), 1);
-		assertEquals(((Map) resultList.get(0)).get("ip"), "192.168.12.2");
+		assertEquals(((Map) resultList.get(0)).get("age"), "21");
+		assertEquals(((Map) resultList.get(0)).get("address"), "China");
 
+	}
+	
+	/**
+	 * 测试ndb中insert行为
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@Test
+	public void testInsert() {
+
+		Object result = null;
+		Object selectResult = null;
+
+		result = statment.execute(ndb, "insert:root->parent->child !! name=bill, sex=male, age=31");
+		selectResult = statment.execute((Map<String, Object>) result, "select:root->parent->child->name:bill");
+		assertTrue(selectResult instanceof List);
+		List resultList = (List) selectResult;
+		assertEquals(resultList.size(), 1);
+		assertEquals(((Map) resultList.get(0)).get("sex"), "male");
+		assertEquals(((Map) resultList.get(0)).get("age"), "31");
 	}
 
 	/**
@@ -184,42 +229,21 @@ public class StatementTest {
 		Object result = null;
 
 		// Travel: 遍历
-		result = statment.execute((Map<String, Object>) ndb, "select:firewall->objectgroup");
+		result = statment.execute((Map<String, Object>) ndb, "select:root->parent->child");
 		assertTrue(result instanceof List);
-		assertTrue(((List) result).size() == 0);
-
+		assertEquals(((List) result).size(), 3);
+		
+		//修改child节点名称为children
 		result = statment.execute(ndb, "travel", new TraversalActionTest());
 		assertTrue(result instanceof Map);
 
-		result = statment.execute((Map<String, Object>) result, "select:firewall->objectgroup");
-		assertTrue(result instanceof List);
-		assertTrue(((List) result).size() > 0);
-	}
-
-	/**
-	 * 测试ndb中insert行为
-	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	@Test
-	public void testInsert() {
-
-		Object result = null;
-		Object selectResult = null;
-
-		result = statment.execute(ndb, "insert:firewall->nat !! name=192.168.9.21,ip=192.168.9.21");
-		selectResult = statment.execute((Map<String, Object>) result, "select:firewall->nat");
+		Object selectResult = statment.execute((Map<String, Object>) result, "select:root->parent->child");
 		assertTrue(selectResult instanceof List);
-		assertTrue(((List) selectResult).size() == 1);
-
-		result = statment.execute((Map<String, Object>) result, "insert:firewall->nat !! name=192.168.9.22,ip=192.168.9.22");
-		selectResult = statment.execute((Map<String, Object>) result, "select:firewall->nat");
+		assertEquals(((List) selectResult).size(), 0);
+		
+		selectResult = statment.execute((Map<String, Object>) result, "select:root->parent->children");
 		assertTrue(selectResult instanceof List);
-		assertTrue(((List) selectResult).size() == 2);
-
-		result = statment.execute((Map<String, Object>) result, "insert:firewall->nat !! name=192.168.9.23,ip=192.168.9.23");
-		selectResult = statment.execute((Map<String, Object>) result, "select:firewall->nat");
-		assertTrue(selectResult instanceof List);
-		assertTrue(((List) selectResult).size() == 3);
+		assertEquals(((List) selectResult).size(), 3);
 	}
 
 }

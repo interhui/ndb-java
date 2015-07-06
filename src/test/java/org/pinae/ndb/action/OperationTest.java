@@ -40,13 +40,14 @@ public class OperationTest {
 	/**
 	 * ndb自定义行为单元测试
 	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Test
 	public void testOperation() {
 		Object result = null;
 		List resultList= null;
 		
-		result = statment.execute(ndb, "update:firewall", new OperationActionTest());
-		result = statment.execute( (Map<String, Object>)result, "select:firewall->flag:pinae");
+		result = statment.execute(ndb, "update:root", new OperationActionTest());
+		result = statment.execute( (Map<String, Object>)result, "select:root->flag:pinae");
 		resultList = (List)result;
 		assertEquals(resultList.size(), 1);
 	}

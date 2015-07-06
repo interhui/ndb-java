@@ -176,7 +176,7 @@ public abstract class Locator {
 				return true;
 			}
 		} else if (exp.endsWith("$")) {
-			String endswith = exp.substring(1);
+			String endswith = exp.substring(0, exp.length() - 1);
 			if(value !=null && value.toString().endsWith(endswith)) {
 				return true;
 			}
