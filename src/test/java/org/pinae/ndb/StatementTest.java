@@ -44,7 +44,7 @@ public class StatementTest {
 	public void testExist() {
 		Object result = null;
 
-		// Exist：存在测试
+		// exist测试
 		result = statment.execute(ndb, "exist:root->parent->child->name:jim");
 		assertEquals(((Boolean) result).booleanValue(), true);
 
@@ -63,7 +63,7 @@ public class StatementTest {
 	public void testOne() {
 		Object result = null;
 
-		// One：查询测试
+		// one测试
 		result = statment.execute(ndb, "one:root->parent->child->sex:male");
 		assertEquals(((Map) result).get("name"), "jim");
 		assertEquals(((Map) result).get("age"), "20");
@@ -79,7 +79,7 @@ public class StatementTest {
 		Object result = null;
 		List resultList = null;
 
-		// Select：查询测试
+		// select测试
 		result = statment.execute(ndb, "select:root->parent->child->name:/.*m/");
 		assertTrue(result instanceof List);
 		resultList = (List) result;
@@ -140,7 +140,7 @@ public class StatementTest {
 		Object result = null;
 		List resultList = null;
 
-		// Delete：删除测试
+		// delete测试
 		result = statment.execute(ndb, "delete:root->parent->child->name:jim !! [sex, age]");
 		result = statment.execute((Map<String, Object>) result, "select:root->parent->child->name:jim");
 		assertTrue(result instanceof List);
@@ -170,7 +170,8 @@ public class StatementTest {
 		assertTrue(result instanceof List);
 		resultList = (List) result;
 		assertEquals(resultList.size(), 3);
-
+		
+		// clean测试
 		result = statment.execute(ndb, "delete:root->parent->child->name:jim !! block");
 		result = statment.execute((Map<String, Object>) result, "clean");
 		result = statment.execute((Map<String, Object>) result, "select:root->parent->child");
@@ -189,7 +190,7 @@ public class StatementTest {
 		Object result = null;
 		List resultList = null;
 
-		// Update：更新测试
+		// update测试
 		result = statment.execute(ndb, "update:root->parent->child->name:jim !! age=21, address=China");
 		result = statment.execute((Map<String, Object>) result, "select:root->parent->child->name:jim");
 		assertTrue(result instanceof List);
@@ -209,7 +210,7 @@ public class StatementTest {
 
 		Object result = null;
 		Object selectResult = null;
-
+		//insert 测试
 		result = statment.execute(ndb, "insert:root->parent->child !! name=bill, sex=male, age=31");
 		selectResult = statment.execute((Map<String, Object>) result, "select:root->parent->child->name:bill");
 		assertTrue(selectResult instanceof List);
@@ -228,7 +229,7 @@ public class StatementTest {
 
 		Object result = null;
 
-		// Travel: 遍历
+		// travel 遍历
 		result = statment.execute((Map<String, Object>) ndb, "select:root->parent->child");
 		assertTrue(result instanceof List);
 		assertEquals(((List) result).size(), 3);
