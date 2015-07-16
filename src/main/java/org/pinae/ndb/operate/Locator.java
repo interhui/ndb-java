@@ -150,7 +150,11 @@ public abstract class Locator {
 	}
 	
 	private boolean checkValue (Object value, String exp) {
-			
+		
+		if (value == null || exp == null) {
+			return false;
+		}
+		
 		if (exp.startsWith("/") && exp.endsWith("/")) { //正则表达式判断
 			String regex = exp.substring(1, exp.length()-1);
 			if(value!=null && value instanceof String && ((String)value).matches(regex)){ // 正则表达式匹配
