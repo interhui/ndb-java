@@ -26,13 +26,11 @@ public class NodeReader {
 	/**
 	 * 载入解析ndb文件内容
 	 * 
-	 * @param filename
-	 *            文件名
+	 * @param filename 文件名
 	 * 
 	 * @return 解析后的ndb信息
 	 * 
-	 * @throws IOException
-	 *             异常处理
+	 * @throws IOException 异常处理
 	 */
 	public Map<String, Object> read(String filename) throws IOException {
 		List<String> fileContentList = new ArrayList<String>();
