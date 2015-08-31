@@ -26,11 +26,13 @@ public class NodeReader {
 	/**
 	 * 载入解析ndb文件内容
 	 * 
-	 * @param filename 文件名
+	 * @param filename
+	 *            文件名
 	 * 
 	 * @return 解析后的ndb信息
 	 * 
-	 * @throws IOException 异常处理
+	 * @throws IOException
+	 *             异常处理
 	 */
 	public Map<String, Object> read(String filename) throws IOException {
 		List<String> fileContentList = new ArrayList<String>();
@@ -59,63 +61,64 @@ public class NodeReader {
 		Map<String, Object> ndb = new HashMap<String, Object>();
 
 		while (linenum < fileContentList.size()) {
+			try {
+				String line = fileContentList.get(linenum).trim();
 
-			String line = fileContentList.get(linenum).trim();
+				linenum++;
 
-			linenum++;
+				if (line == null || line.equals("") || StringUtils.startsWith(line, "#")) {
+					continue;
+				}
 
-			if (line == null || line.equals("") || StringUtils.startsWith(line, "#")) {
-				continue;
-			}
+				if (line.endsWith("{")) {
+					String nodeName = line.substring(0, line.indexOf("{")).trim();
+					Map<String, Object> nodeValue = parse(fileContentList);
 
-			if (line.endsWith("{")) {
-				String nodeName = line.substring(0, line.indexOf("{")).trim();
-				Map<String, Object> nodeValue = parse(fileContentList);
-
-				Object node = ndb.get(nodeName);
-				if (node == null) {
-					ndb.put(nodeName, nodeValue);
-				} else {
-					List nodeList = null;
-					if (node instanceof List) {
-						nodeList = (List) node;
+					Object node = ndb.get(nodeName);
+					if (node == null) {
+						ndb.put(nodeName, nodeValue);
 					} else {
-						nodeList = new ArrayList();
-						nodeList.add(node);
+						List nodeList = null;
+						if (node instanceof List) {
+							nodeList = (List) node;
+						} else {
+							nodeList = new ArrayList();
+							nodeList.add(node);
+						}
+						nodeList.add(nodeValue);
+						ndb.put(nodeName, nodeList);
 					}
-					nodeList.add(nodeValue);
-					ndb.put(nodeName, nodeList);
-				}
 
-			} else if (line.endsWith("}")) {
-				return ndb;
-			} else {
-				String items[] = new String[2];
-				if (line.indexOf(":") > 0) {
-					items[0] = line.substring(0, line.indexOf(":")).trim();
-					items[1] = line.substring(line.indexOf(":") + 1, line.length()).trim();
-				}
-
-				Object itemValue = ndb.get(items[0]);
-				if (itemValue != null) {
-					List itemValueList = null;
-					if (itemValue instanceof List) {
-						itemValueList = (List) itemValue;
-					} else {
-						itemValueList = new ArrayList();
-						itemValueList.add(itemValue);
-					}
-					itemValueList.add(items[1]);
-
-					ndb.put(items[0], itemValueList);
+				} else if (line.endsWith("}")) {
+					return ndb;
 				} else {
-					ndb.put(items[0], items[1]);
+					if (line.indexOf(":") > 0) {
+						String items[] = new String[2];
+
+						items[0] = line.substring(0, line.indexOf(":")).trim();
+						items[1] = line.substring(line.indexOf(":") + 1, line.length()).trim();
+
+						Object itemValue = ndb.get(items[0]);
+						if (itemValue != null) {
+							List itemValueList = null;
+							if (itemValue instanceof List) {
+								itemValueList = (List) itemValue;
+							} else {
+								itemValueList = new ArrayList();
+								itemValueList.add(itemValue);
+							}
+							itemValueList.add(items[1]);
+
+							ndb.put(items[0], itemValueList);
+						} else {
+							ndb.put(items[0], items[1]);
+						}
+					}
 				}
+			} catch (Exception e) {
 
 			}
-
 		}
-
 		return ndb;
 	}
 }
