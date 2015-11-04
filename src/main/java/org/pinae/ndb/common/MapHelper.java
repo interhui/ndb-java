@@ -12,6 +12,7 @@ import java.util.Set;
  *
  */
 public class MapHelper {
+	
 	/**
 	 * Map对象拷贝
 	 * 
@@ -68,7 +69,7 @@ public class MapHelper {
 	}
 	
 	/**
-	 * 将数组输出为Ma
+	 * 将数组输出为Map
 	 * 
 	 * @param valuePairs 键值集合，其中第一个元素为键，第二个元素为值
 	 * 
@@ -93,11 +94,11 @@ public class MapHelper {
 	}
 	
 	/**
-	 * 由任意类型的Map转换为Map<String, String>
+	 * Map格式转换: Object转换为String
 	 * 
 	 * @param src 需要进行转换的Map
 	 * 
-	 * @return 转换后的Map<String, String>
+	 * @return 转换后的Map
 	 */
 	public static Map<String, String> convertToStringMap(Map<?, ?> src) {
 		Map<String, String> dst = new HashMap<String, String>();
@@ -122,11 +123,11 @@ public class MapHelper {
 	}
 	
 	/**
-	 * 由Map<String, String>转换为Map<Object, Object>
+	 * Map格式转换: String转换为Object
 	 * 
-	 * @param src 需要转换的Map<String, String>
+	 * @param src 需要转换的Map
 	 * 
-	 * @return 转换后的Map<Object, Object>
+	 * @return 转换后Map
 	 */
 	@SuppressWarnings("unchecked")
 	public static Map<Object, Object> convertToObjectMap(Map<String, String> src) {

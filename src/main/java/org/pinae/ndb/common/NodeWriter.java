@@ -25,7 +25,7 @@ public class NodeWriter {
 	 * @param rootNode 根节点名称
 	 * @param ndb Map格式的ndb数据
 	 * 
-	 * @throws IOException
+	 * @throws IOException IO异常
 	 */
 	public void write(String filename, String rootNode, Map<String, Object> ndb) throws IOException{
 		PrintWriter writer = new PrintWriter(filename);

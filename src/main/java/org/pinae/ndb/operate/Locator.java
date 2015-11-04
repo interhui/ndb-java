@@ -17,10 +17,7 @@ import org.apache.commons.lang3.StringUtils;
 public abstract class Locator {
 	
 	/**
-	 * 定位对象
-	 * 
-	 * 查询语句表示方法为：A->B->C:Value
-	 * 如果首次开始，A为当前项，B->C:Value为子查询，如果当前项=子查询，则证明已经进入最后一个查询
+	 * 使用ndb语法定位对象
 	 * 
 	 * @param ndb 需要查询的ndb对象
 	 * @param query 查询语句
