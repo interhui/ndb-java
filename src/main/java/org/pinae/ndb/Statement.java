@@ -79,10 +79,16 @@ public class Statement {
 				List ndbList = (List) ndb;
 				for (Object ndbItem : ndbList) {
 					if (ndbItem instanceof Map) {
+						Object executeResult = null;
 						if (action != null) {
-							resultList.add(execute((Map<String, Object>) ndbItem, command, path, null, action));
+							executeResult = execute((Map<String, Object>) ndbItem, command, path, null, action);
 						} else {
-							resultList.add(execute((Map<String, Object>) ndbItem, command, path, value, null));
+							executeResult = execute((Map<String, Object>) ndbItem, command, path, value, null);
+						}
+						if (executeResult != null && executeResult instanceof List) {
+							if (((List)executeResult).size() > 0) {
+								resultList.add(executeResult);
+							}
 						}
 					}
 				}

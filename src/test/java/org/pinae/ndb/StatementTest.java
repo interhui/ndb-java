@@ -127,6 +127,11 @@ public class StatementTest {
 		assertEquals(resultList.size(), 2);
 		assertEquals(((Map) resultList.get(0)).get("name"), "lucy");
 		assertEquals(((Map) resultList.get(1)).get("name"), "lily");
+		
+		result = statment.execute(NdbTestConstant.getTestList(), "select:masking:true");
+		assertTrue(result instanceof List);
+		resultList = (List) result;
+		assertEquals(resultList.size(), 2);
 
 	}
 
