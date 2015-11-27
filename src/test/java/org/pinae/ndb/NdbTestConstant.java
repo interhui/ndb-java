@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 public class NdbTestConstant {
-	public final static String EXAMPLE_FILE = "src/test/java/resource/example.ndb";
+	public final static String EXAMPLE_FILE = "src/test/resources/example.ndb";
 	
 	public static List<Map<String, Object>> getTestList() {
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();

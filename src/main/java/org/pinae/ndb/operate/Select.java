@@ -13,9 +13,12 @@ import org.pinae.ndb.action.OperationAction;
  *
  */
 public class Select extends Locator {
-	private List<Object> resultList = null; //查询结果
 	
-	private OperationAction action = null; //需要执行的行为
+	/* 查询结果 */
+	private List<Object> resultList = null;
+
+	/* 查询过程中, 需要回调的行为, 如果为null则不进行任何处理 */
+	private OperationAction action = null;
 
 	/**
 	 * ndb检索数据
@@ -25,14 +28,14 @@ public class Select extends Locator {
 	 * 
 	 * @return ndb中查询后的值
 	 */
-	public Object select (Map<String, Object> ndb, String path){
+	public Object select(Map<String, Object> ndb, String path) {
 		resultList = new ArrayList<Object>();
-		
+
 		locate(ndb, path);
-		
+
 		return resultList;
 	}
-	
+
 	/**
 	 * 在ndb中检索数据
 	 * 
@@ -42,9 +45,9 @@ public class Select extends Locator {
 	 * 
 	 * @return ndb中查询后的值
 	 */
-	public Object select (Map<String, Object> ndb, String path, OperationAction action){
+	public Object select(Map<String, Object> ndb, String path, OperationAction action) {
 		this.action = action;
-		
+
 		return select(ndb, path);
 	}
 
@@ -53,12 +56,10 @@ public class Select extends Locator {
 		if (action != null) {
 			action.handle(item);
 		}
-		
-		if (item != null){
+
+		if (item != null) {
 			resultList.add(item);
 		}
 	}
-
-
 
 }

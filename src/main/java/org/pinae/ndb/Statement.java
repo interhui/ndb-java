@@ -10,6 +10,7 @@ import org.pinae.ndb.action.Action;
 import org.pinae.ndb.action.OperationAction;
 import org.pinae.ndb.action.TraversalAction;
 import org.pinae.ndb.common.NodeReader;
+import org.pinae.ndb.common.NodeRedirect;
 import org.pinae.ndb.common.NodeWriter;
 import org.pinae.ndb.operate.Cleaner;
 import org.pinae.ndb.operate.Delete;
@@ -55,12 +56,14 @@ public class Statement {
 			return null;
 		}
 
+		// 切分指令和查询内容: [update]:[root->parent !! name=Hui, age=31 >> output]
 		String command = query;
 		if (query.indexOf(":") > -1) {
 			command = StringUtils.substringBefore(query, ":").trim();
 			query = StringUtils.substringAfter(query, ":").trim();
 		}
 
+		// 切分路径和值: [root->parent] !! [name=Hui, age=31 >> output]
 		String queryItems[] = query.split("!!");
 
 		if (queryItems != null) {
@@ -72,6 +75,16 @@ public class Statement {
 			if (queryItems.length > 1) {
 				value = queryItems[1].trim();
 			}
+			
+			// 切分路径(值)与重定向目标: [name=Hui, age=31] >> [output]
+			String redirect = null;
+			if (StringUtils.contains(path, ">>")) {
+				redirect = StringUtils.substringAfter(path, ">>").trim();
+				path = StringUtils.substringBefore(path, ">>").trim();
+			} else if (StringUtils.contains(value, ">>")) {
+				redirect = StringUtils.substringAfter(value, ">>").trim();
+				value = StringUtils.substringBefore(value, ">>").trim();
+			}
 
 			List resultList = new ArrayList();
 
@@ -79,12 +92,7 @@ public class Statement {
 				List ndbList = (List) ndb;
 				for (Object ndbItem : ndbList) {
 					if (ndbItem instanceof Map) {
-						Object executeResult = null;
-						if (action != null) {
-							executeResult = execute((Map<String, Object>) ndbItem, command, path, null, action);
-						} else {
-							executeResult = execute((Map<String, Object>) ndbItem, command, path, value, null);
-						}
+						Object executeResult = execute((Map<String, Object>) ndbItem, command, path, value, action, redirect);
 						if (executeResult != null && executeResult instanceof List) {
 							if (((List)executeResult).size() > 0) {
 								resultList.add(executeResult);
@@ -93,11 +101,8 @@ public class Statement {
 					}
 				}
 			} else if (ndb instanceof Map) {
-				if (action != null) {
-					return execute((Map<String, Object>) ndb, command, path, null, action);
-				} else {
-					return execute((Map<String, Object>) ndb, command, path, value, null);
-				}
+				Object executeResult = execute((Map<String, Object>) ndb, command, path, value, action, redirect);
+				return executeResult;
 			}
 
 			if (resultList.size() > 0) {
@@ -109,7 +114,7 @@ public class Statement {
 	}
 
 	@SuppressWarnings("rawtypes")
-	private Object execute(Map<String, Object> ndb, String command, String path, String value, Action action) {
+	private Object execute(Map<String, Object> ndb, String command, String path, String value, Action action, String redirect) {
 		Object result = null;
 
 		if (command != null) {
@@ -169,6 +174,12 @@ public class Statement {
 				}
 			}
 		}
+		
+		// 执行结果定向输出
+		if (result != null && StringUtils.isNotEmpty(redirect) && !redirect.equalsIgnoreCase("null")) {
+			new NodeRedirect().redirect(redirect, result);
+		}
+		
 		return result;
 	}
 
