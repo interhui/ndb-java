@@ -19,6 +19,23 @@ import org.apache.commons.lang3.StringUtils;
 public class NodeWriter {
 	
 	/**
+	 * 保存文本内容
+	 * 
+	 * @param filename 文件名
+	 * @param content 文本内容
+	 * 
+	 * @throws IOException IO异常
+	 */
+	public void write(String filename, String content) throws IOException {
+		PrintWriter writer = new PrintWriter(filename);
+		
+		writer.write(content);
+		
+		writer.flush();
+		writer.close();
+	}
+	
+	/**
 	 * 保存为ndb格式文件
 	 * 
 	 * @param filename 文件名
@@ -28,12 +45,7 @@ public class NodeWriter {
 	 * @throws IOException IO异常
 	 */
 	public void write(String filename, String rootNode, Map<String, Object> ndb) throws IOException{
-		PrintWriter writer = new PrintWriter(filename);
-		
-		writer.write(print(rootNode, ndb));
-		
-		writer.flush();
-		writer.close();
+		write(filename, print(rootNode, ndb));
 	}
 	
 	/**
@@ -48,8 +60,10 @@ public class NodeWriter {
 	public String print(String rootNode, Map<String, Object> ndb){
 		List<String> ndbInfo = new ArrayList<String>();
 
-		ndbInfo.add(rootNode + "{\n");
-
+		if (StringUtils.isNotEmpty(rootNode)) {
+			ndbInfo.add(rootNode + "{\n");
+		}
+		
 		Set<String> nodeKeySet = ndb.keySet();
 		for (String nodeKey : nodeKeySet){
 			Object nodeValue = ndb.get(nodeKey);
@@ -68,7 +82,10 @@ public class NodeWriter {
 				ndbInfo.add(String.format("%s:%s\n", nodeKey, nodeValue.toString()));
 			}
 		}
-		ndbInfo.add("}\n");
+		
+		if (StringUtils.isNotEmpty(rootNode)) {
+			ndbInfo.add("}\n");
+		}
 		
         return StringUtils.join(ndbInfo, "");
 	}
