@@ -16,20 +16,25 @@ import java.util.Map;
 public class NodeRedirect {
 	
 	@SuppressWarnings("unchecked")
-	public void redirect(String redirect, Object result) {
+	public void redirect(String target, Object ndb) {
 		NodeWriter writer = new NodeWriter();
 		
 		Map<String, Object> resultMap = null;
-		if (result instanceof Map) {
-			resultMap = (Map<String, Object>)result;
+		if (ndb instanceof Map) {
+			resultMap = (Map<String, Object>)ndb;
 		} else {
 			resultMap = new HashMap<String, Object>();
-			resultMap.put("result", result);
+			resultMap.put("result", ndb);
 		}
-		try {
-			writer.write(redirect, null, resultMap);
-		} catch (IOException e) {
-			
+		
+		if (target.equalsIgnoreCase("print")) {
+			System.out.println(writer.print(null, resultMap));
+		} else {
+			try {
+				writer.write(target, null, resultMap);
+			} catch (IOException e) {
+				
+			}
 		}
 	}
 }
