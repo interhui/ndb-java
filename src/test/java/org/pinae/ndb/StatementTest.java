@@ -298,5 +298,38 @@ public class StatementTest {
 			
 		}
 	}
+	
+	@SuppressWarnings("rawtypes")
+	@Test
+	public void testScript() {
+		Object selectResult = null;
+		List resultList = null;
+		
+		Object result = statement.execute(ndb, "script:" + NdbTestConstant.SCRIPT_FILE);
+		
+		selectResult = statement.execute(result, "select:root->parent->child->name:bill");
+		assertTrue(selectResult instanceof List);
+		resultList = (List) selectResult;
+		assertEquals(resultList.size(), 1);
+		assertEquals(((Map) resultList.get(0)).get("name"), "bill");
+		assertEquals(((Map) resultList.get(0)).get("sex"), "male");
+		assertEquals(((Map) resultList.get(0)).get("age"), "31");
+		
+		selectResult = statement.execute(result, "select:root->parent->child->name:lily");
+		assertTrue(selectResult instanceof List);
+		resultList = (List) selectResult;
+		assertEquals(resultList.size(), 1);
+		assertEquals(((Map) resultList.get(0)).get("name"), "lily");
+		assertEquals(((Map) resultList.get(0)).get("address"), "China");
+		assertEquals(((Map) resultList.get(0)).get("age"), "21");
+		
+		selectResult = statement.execute(result, "select:root->parent->child->name:jim");
+		assertTrue(selectResult instanceof List);
+		resultList = (List) selectResult;
+		assertEquals(resultList.size(), 1);
+		assertEquals(((Map) resultList.get(0)).get("name"), "jim");
+		assertEquals(((Map) resultList.get(0)).get("age"), null);
+		assertEquals(((Map) resultList.get(0)).get("sex"), null);
+	}
 
 }

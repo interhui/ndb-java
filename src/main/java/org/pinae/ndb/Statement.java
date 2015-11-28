@@ -15,6 +15,7 @@ import org.pinae.ndb.common.NodeWriter;
 import org.pinae.ndb.operate.Cleaner;
 import org.pinae.ndb.operate.Delete;
 import org.pinae.ndb.operate.Insert;
+import org.pinae.ndb.operate.Script;
 import org.pinae.ndb.operate.Select;
 import org.pinae.ndb.operate.Traversal;
 import org.pinae.ndb.operate.Update;
@@ -166,6 +167,8 @@ public class Statement {
 				} else {
 					result = new Insert().insert(ndb, path, value);
 				}
+			} else if (command.equalsIgnoreCase("script")) {
+				result = new Script().run(ndb, path);
 			} else if (command.equalsIgnoreCase("clean")) {
 				result = new Cleaner().clean(ndb);
 			} else if (command.equalsIgnoreCase("travel")) {

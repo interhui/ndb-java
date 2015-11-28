@@ -1,6 +1,7 @@
 package org.pinae.ndb.common;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -11,9 +12,9 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * ndb格式解析器
+ * ndbd读取
  * 
- * 将ndb数据信息解析为Map类型
+ * 将ndb读取并解析为Map类型
  * 
  * @author Huiyugeng
  *
@@ -22,29 +23,74 @@ import org.apache.commons.lang3.StringUtils;
 public class NodeReader {
 
 	private int linenum = 0; // 配置行号
+	
+	/**
+	 * 载入文本文件
+	 * 
+	 * @param filename 文件名
+	 * 
+	 * @return 文件内容
+	 * 
+	 * @throws IOException 异常处理
+	 */
+	public List<String> readAsList(String filename) throws IOException {
+		BufferedReader br = new BufferedReader(new FileReader(filename));
+		return readAsList(br);
+	}
+	
+	/**
+	 * 载入文本文件
+	 * 
+	 * @param filename 文件名
+	 * 
+	 * @return 文件内容
+	 * 
+	 * @throws IOException 异常处理
+	 */
+	public List<String> readAsList(File file) throws IOException {
+		BufferedReader br = new BufferedReader(new FileReader(file));
+		return readAsList(br);
+	}
+	
+	private List<String> readAsList(BufferedReader br) throws IOException {
+		List<String> content = new ArrayList<String>();
+		if (br != null) {
+			String line = "";
+			while ((line = br.readLine()) != null) {
+				content.add(line);
+			}
+			br.close();
+		}
+		return content;
+	}
 
 	/**
 	 * 载入解析ndb文件内容
 	 * 
-	 * @param filename
-	 *            文件名
+	 * @param filename 文件名
 	 * 
 	 * @return 解析后的ndb信息
 	 * 
-	 * @throws IOException
-	 *             异常处理
+	 * @throws IOException 异常处理
 	 */
 	public Map<String, Object> read(String filename) throws IOException {
-		List<String> fileContentList = new ArrayList<String>();
-		BufferedReader br = new BufferedReader(new FileReader(filename));
-		String line = "";
-		while ((line = br.readLine()) != null) {
-			fileContentList.add(line);
-		}
-		br.close();
-
-		Map<String, Object> ndb = parse(fileContentList);
-
+		List<String> content = readAsList(filename);
+		Map<String, Object> ndb = parse(content);
+		return ndb;
+	}
+	
+	/**
+	 * 载入解析ndb文件内容
+	 * 
+	 * @param file 文件对象
+	 * 
+	 * @return 解析后的ndb信息
+	 * 
+	 * @throws IOException 异常处理
+	 */
+	public Map<String, Object> read(File file) throws IOException {
+		List<String> content = readAsList(file);
+		Map<String, Object> ndb = parse(content);
 		return ndb;
 	}
 

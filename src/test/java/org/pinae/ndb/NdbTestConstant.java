@@ -8,6 +8,8 @@ import java.util.Map;
 public class NdbTestConstant {
 	public final static String EXAMPLE_FILE = "src/test/resources/example.ndb";
 	
+	public final static String SCRIPT_FILE = "src/test/resources/example.script";
+	
 	public static List<Map<String, Object>> getTestList() {
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		
