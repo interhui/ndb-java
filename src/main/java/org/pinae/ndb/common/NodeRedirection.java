@@ -13,7 +13,7 @@ import java.util.Map;
  *
  *
  */
-public class NodeRedirect {
+public class NodeRedirection {
 	
 	@SuppressWarnings("unchecked")
 	public void redirect(String target, Object ndb) {

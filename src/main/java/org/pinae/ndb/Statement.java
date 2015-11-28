@@ -10,7 +10,7 @@ import org.pinae.ndb.action.Action;
 import org.pinae.ndb.action.OperationAction;
 import org.pinae.ndb.action.TraversalAction;
 import org.pinae.ndb.common.NodeReader;
-import org.pinae.ndb.common.NodeRedirect;
+import org.pinae.ndb.common.NodeRedirection;
 import org.pinae.ndb.common.NodeWriter;
 import org.pinae.ndb.operate.Cleaner;
 import org.pinae.ndb.operate.Delete;
@@ -180,7 +180,7 @@ public class Statement {
 		
 		// 执行结果定向输出
 		if (result != null && StringUtils.isNotEmpty(redirect) && !redirect.equalsIgnoreCase("null")) {
-			new NodeRedirect().redirect(redirect, result);
+			new NodeRedirection().redirect(redirect, result);
 		}
 		
 		return result;
