@@ -332,4 +332,10 @@ public class StatementTest {
 		assertEquals(((Map) resultList.get(0)).get("sex"), null);
 	}
 
+	@Test
+	public void testPrint() {
+		String ndbContent = statement.print(null, ndb);
+		System.out.println(ndbContent);
+	}
+	
 }
