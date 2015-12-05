@@ -198,7 +198,15 @@ public class MapHelper {
 				if (dstValue != null) {
 					if (dstValue instanceof List) {
 						List<Object> valueList = (List<Object>) dstValue;
-						valueList.add(srcValue);
+						if (srcValue instanceof List) {
+							valueList.addAll((List<Object>)srcValue);
+						} else {
+							valueList.add(srcValue);
+						}
+						dstMap.put(srcKey, valueList);
+					} else if (srcValue instanceof List) {
+						List<Object> valueList = (List<Object>) srcValue;
+						valueList.add(dstValue);
 						dstMap.put(srcKey, valueList);
 					} else {
 						dstMap.put(srcKey, srcValue);

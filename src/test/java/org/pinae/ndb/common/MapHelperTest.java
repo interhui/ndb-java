@@ -84,21 +84,43 @@ public class MapHelperTest {
 	@SuppressWarnings("rawtypes")
 	@Test
 	public void testJoin() {
+		List<String> phoneList1 = new ArrayList<String>();
+		phoneList1.add("13343351822");
+		List<String> addressList = new ArrayList<String>();
+		addressList.add("Guangdong");
 		Map<String, Object> src = new HashMap<String, Object>();
 		src.put("name", "Hui");
 		src.put("age", 30);
-		src.put("phone", new ArrayList<String>().add("13343351822"));
+		src.put("phone", phoneList1);
+		src.put("address", addressList);
+		src.put("company", "letour");
 		
+		List<String> phoneList2 = new ArrayList<String>();
+		phoneList2.add("13343351822");
+		List<String> companyList = new ArrayList<String>();
+		companyList.add("pinae");
 		Map<String, Object> dst = new HashMap<String, Object>();
-		src.put("age", 31);
-		src.put("phone", "13391562775");
+		dst.put("age", 31);
+		dst.put("phone", phoneList2);
+		dst.put("address", "Beijing");
+		dst.put("company", companyList);
 		
-		MapHelper.join(src, dst);
-		assertEquals(src.get("name"), "Hui");
-		assertEquals(src.get("age"), 31);
-		Object phone = src.get("phone");
+		MapHelper.join(dst, src);
+		
+		assertEquals(dst.get("name"), "Hui");
+		assertEquals(dst.get("age"), 30);
+		Object phone = dst.get("phone");
 		if (phone instanceof List) {
 			assertEquals(((List)phone).size(), 2);
 		}
+		Object address = dst.get("address");
+		if (phone instanceof List) {
+			assertEquals(((List)address).size(), 2);
+		}
+		Object company = dst.get("company");
+		if (phone instanceof List) {
+			assertEquals(((List)company).size(), 2);
+		}
 	}
+	
 }
