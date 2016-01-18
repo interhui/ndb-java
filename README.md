@@ -8,6 +8,16 @@ ndb(node database) 是一种轻量级嵌入式的文档型数据库, ndb-java是
 
 下载路径：ndb-1.4.zip
 
+## 安装ndb-java##
+
+Maven
+
+	<dependency>
+		<groupId>org.pinae</groupId>
+		<artifactId>ndb</artifactId>
+		<version>1.4</version>
+	</dependency>
+
 ## ndb语法规则 ##
 
 **ndb 语法格式：**
@@ -142,12 +152,28 @@ item : value用于检索对应的node，根据后面的值对节点中的数据�
 
 ## 在java中使用ndb ##
 
-	Statement statment = new Statement();
-	try {
-		Map<String, Object> ndb = statment.read(NdbTestConstant.EXAMPLE_FILE);
-		Object result = statment.execute(ndb, "select:root->parent->child->name:/.*m/");
-		System.out.println(((Map) resultList.get(0)).get("name")); //Output jim
-		System.out.println(((Map) resultList.get(1)).get("name")); //Output tom
-	} catch (IOException e) {
-		
+	package org.pinae.ndb.demo;
+	
+	import java.io.IOException;
+	import java.util.List;
+	import java.util.Map;
+	
+	import org.pinae.ndb.Statement;
+	
+	public class NdbDemo {
+	
+		public static void main(String arg[]) {
+			Statement statment = new Statement();
+			try {
+				Map<String, Object> ndb = statment.read("d:/example.ndb");
+				Object result = statment.execute(ndb, "select:root->parent->child->name:/.*m/");
+				if (result instanceof List) {
+					List resultList = (List)result;
+					System.out.println(((Map) resultList.get(0)).get("name"));
+					System.out.println(((Map) resultList.get(1)).get("name"));
+				}
+			} catch (IOException e) {
+	
+			}
+		}
 	}
