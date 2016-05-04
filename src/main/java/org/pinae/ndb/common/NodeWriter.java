@@ -24,7 +24,7 @@ public class NodeWriter {
 	 * @param filename 文件名
 	 * @param content 文本内容
 	 * 
-	 * @throws IOException IO异常
+	 * @throws IOException IO异常处理
 	 */
 	public void write(String filename, String content) throws IOException {
 		PrintWriter writer = new PrintWriter(filename);
@@ -43,7 +43,7 @@ public class NodeWriter {
 	 * @param ndb Map格式的ndb数据
 	 * @param indentFlag 缩进符,默认为\t
 	 * 
-	 * @throws IOException IO异常
+	 * @throws IOException IO异常处理
 	 */
 	public void write(String filename, String rootNode, Map<String, Object> ndb, String indentFlag) throws IOException {
 		write(filename, print(0, rootNode, ndb, "\t"));
@@ -56,7 +56,7 @@ public class NodeWriter {
 	 * @param rootNode 根节点名称
 	 * @param ndb Map格式的ndb数据
 	 * 
-	 * @throws IOException IO异常
+	 * @throws IOException IO异常处理
 	 */
 	public void write(String filename, String rootNode, Map<String, Object> ndb) throws IOException {
 		write(filename, print(0, rootNode, ndb, "\t"));

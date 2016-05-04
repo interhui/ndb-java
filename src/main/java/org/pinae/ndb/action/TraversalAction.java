@@ -1,7 +1,7 @@
 package org.pinae.ndb.action;
 
 /**
- * ndb自定义遍历行为
+ * ndb遍历行为
  * 
  * @author Huiyugeng
  *

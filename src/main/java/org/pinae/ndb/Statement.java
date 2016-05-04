@@ -25,7 +25,6 @@ import org.pinae.ndb.operate.Update;
  * 
  * @author Huiyugeng
  *
- *
  */
 public class Statement {
 

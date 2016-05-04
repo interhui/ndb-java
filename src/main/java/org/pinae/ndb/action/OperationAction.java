@@ -1,7 +1,7 @@
 package org.pinae.ndb.action;
 
 /**
- * ndb自定义操作行为
+ * ndb节点数据操作行为
  * 
  * @author Huiyugeng
  *

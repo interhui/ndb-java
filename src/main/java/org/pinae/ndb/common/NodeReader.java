@@ -31,7 +31,7 @@ public class NodeReader {
 	 * 
 	 * @return 文件内容
 	 * 
-	 * @throws IOException 异常处理
+	 * @throws IOException IO异常处理
 	 */
 	public List<String> readAsList(String filename) throws IOException {
 		BufferedReader br = new BufferedReader(new FileReader(filename));
@@ -41,11 +41,11 @@ public class NodeReader {
 	/**
 	 * 载入文本文件
 	 * 
-	 * @param filename 文件名
+	 * @param file 文件名
 	 * 
 	 * @return 文件内容
 	 * 
-	 * @throws IOException 异常处理
+	 * @throws IOException IO异常处理
 	 */
 	public List<String> readAsList(File file) throws IOException {
 		BufferedReader br = new BufferedReader(new FileReader(file));
@@ -71,7 +71,7 @@ public class NodeReader {
 	 * 
 	 * @return 解析后的ndb信息
 	 * 
-	 * @throws IOException 异常处理
+	 * @throws IOException IO异常处理
 	 */
 	public Map<String, Object> read(String filename) throws IOException {
 		List<String> content = readAsList(filename);
@@ -86,7 +86,7 @@ public class NodeReader {
 	 * 
 	 * @return 解析后的ndb信息
 	 * 
-	 * @throws IOException 异常处理
+	 * @throws IOException IO异常处理
 	 */
 	public Map<String, Object> read(File file) throws IOException {
 		List<String> content = readAsList(file);

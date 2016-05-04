@@ -6,6 +6,12 @@ import java.util.Map;
 import org.pinae.ndb.common.NodeReader;
 import org.pinae.ndb.common.NodeWriter;
 
+/**
+ * NDB操作
+ * 
+ * @author huiyugeng
+ *
+ */
 public class Ndb {
 	/**
 	 * 执行ndb语句
@@ -38,7 +44,7 @@ public class Ndb {
 	 * @param rootNode 根节点名称
 	 * @param ndb Map格式
 	 * 
-	 * @throws IOException IO异常
+	 * @throws IOException IO异常处理
 	 */
 	public static void write(String filename, String rootNode, Map<String, Object> ndb) throws IOException {
 		new NodeWriter().write(filename, rootNode, ndb);
@@ -51,7 +57,7 @@ public class Ndb {
 	 * 
 	 * @return 解析后的ndb信息
 	 * 
-	 * @throws IOException 异常处理
+	 * @throws IOException IO异常处理
 	 */
 	public static Map<String, Object> read(String filename) throws IOException {
 		return new NodeReader().read(filename);
